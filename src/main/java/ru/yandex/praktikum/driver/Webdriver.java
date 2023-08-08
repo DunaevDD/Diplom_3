@@ -1,24 +1,39 @@
 package ru.yandex.praktikum.driver;
 
-import com.codeborne.selenide.WebDriverRunner;
-import io.qameta.allure.Step;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Webdriver {
+     /*
+    Переменные окружения:
+    BROWSER_DRIVER - путь к яндексдрайверу
+    YANDEX_BROWSER_PATH - путь к исполняемому файлу Яндекс браузера в системе
+     */
 
-    @Step("Создание драйвера")
-    public void startBrowser() {
-        String pathToYandexDriver = "src/main/resources/yandexdriver.exe";
-        String pathToChromeDriver = "src/main/resources/chromedriver.exe";
-        System.setProperty("webdriver.chrome.driver", pathToChromeDriver);
-        //Настройки браузера
+    public static WebDriver startBrowser() {
+        String browser = System.getProperty("browser");
+
+        switch (browser) {
+            case "yandex":
+                return createYandexDriver();
+            case "chrome":
+            default:
+                return createChromeDriver();
+        }
+    }
+
+    private static WebDriver createChromeDriver() {
         ChromeOptions options = new ChromeOptions();
-       // options.addArguments("--start-maximized");
-        // options.addArguments("--headless");
-        //Запуск кастомного драйвера
-        WebDriver driver = new ChromeDriver(options);
-        WebDriverRunner.setWebDriver(driver);
+        options.addArguments("--remote-allow-origins=*");
+        return null;
+    }
+
+    private static WebDriver createYandexDriver() {
+
+        System.setProperty("webdriver.chrome.driver", System.getenv("BROWSER_DRIVER"));
+        ChromeOptions driver = new ChromeOptions();
+        driver.setBinary(System.getenv("YANDEX_BROWSER_PATH"));
+        return  null;
     }
 }
